@@ -1,0 +1,11 @@
+0:CCS,Caracas,False
+1:AUA,Aruba,True
+2:BON,Bonaire,True
+3:CUR,Curazao,True
+4:SXM,San Martin,True
+5:SDQ,Santo Domingo,True
+6:SBH,San Bartolome,False
+7:POS,Puerto Espana (Trinidad),False
+8:BGI,Barbados,False
+9:FDF,Fort de France (Martinica),False
+10:PTP,Point a Pitre (Guadalupe),False
