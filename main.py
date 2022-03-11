@@ -1,9 +1,10 @@
-import sys, os
+import os
 from graph import Graph
 from dijkstra import dijkstra
 from bfs import minEdgeBFS
 from tracker import track_path
 from show_graph import show_graph
+from read_data import edge_list, vertices, int2label, visas, nombres
 
 # Revisa si el usuario tiene las dependencias instaladas y si no las instala
 try:
@@ -24,32 +25,6 @@ def clear(): # Limpia la consola
     else: #para mac y linux
         _ = os.system('clear')
 
-# Inicializamos los diccionarios vacios
-edge_list = []
-vertices = {}
-int2label = {}
-visas = {}
-nombres = {}
-
-with open(os.path.join(sys.path[0], 'destinos.txt'), "r") as destinos: # Abre el archivo destinos.txt
-    destinos = destinos.read().splitlines() # Separa las lineas del archivo
-    for i in destinos: # Recorre todas las lineas del archivo
-        num,destino = i.split(":") # Separa el numero de vertice y los datos del vertice
-        vertices[destino.split(",")[0]] = int(num) # Agrega el numero de vertice y el nombre del vertice al diccionario vertices
-        int2label[int(num)] = destino.split(",")[0] # Agrega el numero de vertice y el nombre del vertice al diccionario int2label
-        nombres[int(num)] = destino.split(",")[1] # Agrega el nombre completo del vertice al diccionario nombres
-        visas[int(num)] = destino.split(",")[2] # Agrega el numero de vertice y un booleano indicando si tiene visa
-
-with open(os.path.join(sys.path[0], 'tarifas.txt'), "r") as tarifas: # Abre el archivo tarifas.txt
-    next(tarifas) # Salta la primera linea
-    tarifas = tarifas.read().splitlines() # Separa las lineas del archivo
-    for i in tarifas: # Recorre todas las lineas del archivo
-        data = i.split(",") # Separa los datos de la linea
-        source = vertices[data[0]] # Obtiene el numero de vertice del origen
-        target = vertices[data[1]] # Obtiene el numero de vertice del destino
-        weight = int(data[2]) # Obtiene el peso de la arista
-        edge_list.append([source, target, weight]) # Agregamos los datos a la lista de aristas
-
 max_vertices = len(vertices) # Obtiene el numero de vertices del grafo
 
 #print(np.array(edge_list)) # Imprime la lista de vertices bonita
@@ -64,9 +39,6 @@ for i in range(graph.v): # Recorre todas las filas de la matriz del grafo origin
     for j in range(graph.v): # Recorre todas las columnas de la matriz del grafo original
         if graph.edges[i][j] != -1: # Si existe una arista entre los vertices
             G.add_edge(i,j,weight=graph.edges[i][j])  # Agrega la arista al grafo con la libreria networkx
-
-
-
 
 
 xy_axis = [['Numero', 'Ciudad']] # Creamos el titulo de la tabla
@@ -163,6 +135,9 @@ while True:
 
 
 if ruta == 1: # Si el usuario eligio la ruta mas barata
+    if tiene_visa == False and visas[destino] == "True": # Si el usuario no tiene visa y la ciudad de destino requiere visa
+        print("\n" + Fore.RED + f"{nombres[destino]} requiere visa, por lo que no es posible que usted viaje a ella" + Fore.RESET) # Imprimimos que no es posible viajar a la ciudad de destino
+        exit() # Salimos del programa
     shortest_paths,pred_dijkstra = dijkstra(graph, origen, tiene_visa) # Obtenemos los caminos mas baratos y los predecesores
     path = track_path(origen, destino, pred_dijkstra) # Obtenemos el camino mas barato entre los vertices de origen y destino mediante los predecesores
     show_graph(path, G, int2label) # Mostramos el grafo con el camino mas barato
@@ -171,10 +146,11 @@ if ruta == 1: # Si el usuario eligio la ruta mas barata
         path[count] = int2label[i] # Cambiamos los vertices por sus nombres
         count += 1 # Aumentamos el contador ayudante
     print(f"\nLa ruta mas barata es: {path}") # Imprimimos el camino mas barato
-    if tiene_visa == False and visas[destino] == True: # Si el usuario no tiene visa y la ciudad de destino requiere visa
-        print("\n" + Fore.RED + f"Sin embargo, {nombres[destino]} requiere visa, por lo que no es posible que usted viaje a ella" + Fore.RESET) # Imprimimos que no es posible viajar a la ciudad de destino
 
 elif ruta == 2: # Si el usuario eligio la ruta menos segmentos de vuelo
+    if tiene_visa == False and visas[destino] == "True": # Si el usuario no tiene visa y la ciudad de destino requiere visa
+        print("\n" + Fore.RED + f"{nombres[destino]} requiere visa, por lo que no es posible que usted viaje a ella" + Fore.RESET) # Imprimimos que no es posible viajar a la ciudad de destino
+        exit() # Salimos del programa
     min_edges,pred_bfs = minEdgeBFS(graph, origen) # Obtenemos los caminos menos segmentos de vuelo y los predecesores
     path = track_path(origen, destino, pred_bfs) # Obtenemos el camino menos segmentos de vuelo entre los vertices de origen y destino mediante los predecesores
     show_graph(path, G, int2label) # Mostramos el grafo con el camino menos segmentos de vuelo
@@ -183,5 +159,3 @@ elif ruta == 2: # Si el usuario eligio la ruta menos segmentos de vuelo
         path[count] = int2label[i] # Cambiamos los vertices por sus nombres
         count += 1 # Aumentamos el contador ayudante
     print(f"\nLa ruta con menos segmentos es: {path}") # Imprimimos el camino menos segmentos de vuelo
-    if tiene_visa == False and visas[destino] == True: # Si el usuario no tiene visa y la ciudad de destino requiere visa
-        print("\n" + Fore.RED + f"Sin embargo, {nombres[destino]} requiere visa, por lo que no es posible que usted viaje a ella" + Fore.RESET) # Imprimimos que no es posible viajar a la ciudad de destino
