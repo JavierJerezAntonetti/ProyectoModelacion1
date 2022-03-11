@@ -30,8 +30,6 @@ def clear(): # Limpia la consola
 
 max_vertices = len(vertices) # Obtiene el numero de vertices del grafo
 
-#print(np.array(edge_list)) # Imprime la lista de vertices bonita
-
 graph = Graph(max_vertices) # Crea el grafo con la cantidad de vertices
 for i in range(len(edge_list)): # Recorre todas las aristas
     graph.add_edge(edge_list[i][0], edge_list[i][1], int(edge_list[i][2])) # Construye el grafo con los vertices y aristas
@@ -42,7 +40,6 @@ for i in range(graph.v): # Recorre todas las filas de la matriz del grafo origin
     for j in range(graph.v): # Recorre todas las columnas de la matriz del grafo original
         if graph.edges[i][j] != -1: # Si existe una arista entre los vertices
             G.add_edge(i,j,weight=graph.edges[i][j])  # Agrega la arista al grafo con la libreria networkx
-
 
 xy_axis = [['Numero', 'Ciudad']] # Creamos el titulo de la tabla
 for i in int2label: # Recorremos el diccionario int2label para obtener los nombres de los vertices
