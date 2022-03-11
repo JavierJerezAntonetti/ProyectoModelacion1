@@ -11,13 +11,16 @@ try:
     import networkx as nx
     from texttable import Texttable
     from colorama import Fore
+    from pyfiglet import Figlet
 except ImportError:
     os.system("pip install networkx")
     os.system("pip install texttable")
     os.system("pip install colorama")
+    os.system("pip install pyfiglet")
     import networkx as nx
     from texttable import Texttable
     from colorama import Fore
+    from pyfiglet import Figlet
 
 def clear(): # Limpia la consola
     if os.name == 'nt': #para windows
@@ -49,6 +52,10 @@ def print_cities(): # Imprime la tabla con los nombres de los vertices
     t = Texttable()
     t.add_rows(xy_axis)
     print(t.draw())
+
+f = Figlet(font="standard") # Crea el titulo del programa
+print(f.renderText("Metro Travel")) # Imprime el titulo del programa
+
 
 # Le pedimos al usuario que seleccione si tiene visa o no
 while True:
@@ -140,12 +147,17 @@ if ruta == 1: # Si el usuario eligio la ruta mas barata
         exit() # Salimos del programa
     shortest_paths,pred_dijkstra = dijkstra(graph, origen, tiene_visa) # Obtenemos los caminos mas baratos y los predecesores
     path = track_path(origen, destino, pred_dijkstra) # Obtenemos el camino mas barato entre los vertices de origen y destino mediante los predecesores
+    cost_path = track_path(origen, destino, pred_dijkstra) # Copia de path para calular los costos de los caminos
     show_graph(path, G, int2label) # Mostramos el grafo con el camino mas barato
     count = 0 # Contador ayudante
+    road = "" # Inicializamos el camino a vacio
     for i in path: # Recorremos el camino mas barato
         path[count] = int2label[i] # Cambiamos los vertices por sus nombres
+        road += path[count] + " -> " # Agregamos el nombre del vertice al camino
         count += 1 # Aumentamos el contador ayudante
-    print(f"\nLa ruta mas barata es: {path}") # Imprimimos el camino mas barato
+
+    print(f"\nLa ruta mas barata es: {road[0:-4]}") # Imprimimos el camino mas barato
+    print(f"\nEl costo total del viaje es: {shortest_paths[destino]}") # Imprimimos el costo del camino mas barato
 
 elif ruta == 2: # Si el usuario eligio la ruta menos segmentos de vuelo
     if tiene_visa == False and visas[destino] == "True": # Si el usuario no tiene visa y la ciudad de destino requiere visa
@@ -155,7 +167,16 @@ elif ruta == 2: # Si el usuario eligio la ruta menos segmentos de vuelo
     path = track_path(origen, destino, pred_bfs) # Obtenemos el camino menos segmentos de vuelo entre los vertices de origen y destino mediante los predecesores
     show_graph(path, G, int2label) # Mostramos el grafo con el camino menos segmentos de vuelo
     count = 0 # Contador ayudante
+    road = "" # Inicializamos el camino a vacio
+    cost = 0 # Inicializamos el costo a 0
+    for i in range(len(path)-1): # Recorremos el camino menos segmentos de vuelo
+        j = path[i+1] # Obtenemos el vertice siguiente
+        for x in edge_list: # Recorremos la lista de aristas
+            if (x[0] == path[i] and x[1] == j) or (x[1] == path[i] and x[0] == j): # Si el vertice actual es igual al vertice siguiente
+                cost += x[2] # Sumamos el costo de la arista
     for i in path: # Recorremos el camino menos segmentos de vuelo
         path[count] = int2label[i] # Cambiamos los vertices por sus nombres
+        road += path[count] + " -> " # Agregamos el nombre del vertice al camino
         count += 1 # Aumentamos el contador ayudante
-    print(f"\nLa ruta con menos segmentos es: {path}") # Imprimimos el camino menos segmentos de vuelo
+    print(f"\nLa ruta mas barata es: {road[0:-4]}") # Imprimimos el camino menos segmentos de vuelo
+    print(f"\nEl costo total del viaje es: {cost}") # Imprimimos el costo del camino mas barato

@@ -15,7 +15,7 @@ def dijkstra(graph, start_vertex, tiene_visa): # start_vertex es el nodo inicial
         visited[current_vertex] = True # Colocamos el nodo como visitado
         for neighbor in range(graph.v): # Para cada nodo vecino
             queued = False # Inicializamos el asistente que revisara si el nodo ya esta encolado
-            if graph.edges[current_vertex][neighbor] != -1 and current_vertex != neighbor: # Si existe una arista entre el nodo actual y el vecino
+            if graph.edges[current_vertex][neighbor] != -1 and current_vertex != neighbor: # Si existe una arista entre el nodo actual y el vecino y el nodo actual no es el vecino
 
                 if not tiene_visa and visas[neighbor] == "True": # Si el viajero no tiene visa y el nodo vecino si la requiere
                     continue # No se puede llegar a ese nodo, lo saltamos y continuamos con el siguiente nodo vecino
