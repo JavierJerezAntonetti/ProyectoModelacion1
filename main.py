@@ -151,7 +151,7 @@ elif ruta == 2: # Si el usuario eligio la ruta menos segmentos de vuelo
     if tiene_visa == False and visas[destino] == "True": # Si el usuario no tiene visa y la ciudad de destino requiere visa
         print("\n" + Fore.RED + f"{nombres[destino]} requiere visa, por lo que no es posible que usted viaje a ella" + Fore.RESET) # Imprimimos que no es posible viajar a la ciudad de destino
         exit() # Salimos del programa
-    min_edges,pred_bfs = minEdgeBFS(graph, origen) # Obtenemos los caminos menos segmentos de vuelo y los predecesores
+    min_edges,pred_bfs = minEdgeBFS(graph, origen, tiene_visa) # Obtenemos los caminos menos segmentos de vuelo y los predecesores
     path = track_path(origen, destino, pred_bfs) # Obtenemos el camino menos segmentos de vuelo entre los vertices de origen y destino mediante los predecesores
     show_graph(path, G, int2label) # Mostramos el grafo con el camino menos segmentos de vuelo
     count = 0 # Contador ayudante
